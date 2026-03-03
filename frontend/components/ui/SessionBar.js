@@ -70,7 +70,7 @@ export default function SessionBar({ isAuthenticated, user = null, hideBrand = f
 
   async function logout() {
     setLogoutLoading(true);
-    try { await fetch('/api/auth/logout', { method: 'POST' }); window.location.replace('/auth'); }
+    try { await fetch('/api/auth/logout', { method: 'POST' }); window.location.replace('/'); }
     catch { setError('Unable to log out. Please try again.'); setConfirmLogoutOpen(false); }
     finally { setLogoutLoading(false); }
   }
