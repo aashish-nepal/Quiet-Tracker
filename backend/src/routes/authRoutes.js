@@ -14,6 +14,7 @@ import {
   resetPasswordWithToken
 } from '../services/authService.js';
 import { requireUserId } from '../middleware/requireUserId.js';
+import { passwordResetRateLimiter } from '../middleware/rateLimiters.js';
 import { logAudit } from '../services/auditLogService.js';
 import { env } from '../config/env.js';
 
@@ -195,6 +196,7 @@ router.patch(
 
 router.post(
   '/forgot-password',
+  passwordResetRateLimiter,
   asyncHandler(async (req, res) => {
     const result = await requestPasswordReset(req.body?.email);
     res.json(result);
@@ -203,6 +205,7 @@ router.post(
 
 router.post(
   '/reset-password',
+  passwordResetRateLimiter,
   asyncHandler(async (req, res) => {
     const result = await resetPasswordWithToken({
       token: req.body?.token,

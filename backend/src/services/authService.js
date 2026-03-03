@@ -1,5 +1,7 @@
+import { createHash } from 'crypto';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
+import { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
 
 import { env } from '../config/env.js';
@@ -40,27 +42,37 @@ function isMissingPhotoUrlColumnError(error) {
   return error?.code === '42703' && String(error?.message || '').includes('photo_url');
 }
 
+/**
+ * Run `queryWithPhoto`, fall back to `queryWithoutPhoto` if the DB schema
+ * does not yet have the `photo_url` column (migration guard).
+ */
+async function queryWithPhotoFallback(withPhotoFn, withoutPhotoFn) {
+  try {
+    return await withPhotoFn();
+  } catch (error) {
+    if (!isMissingPhotoUrlColumnError(error)) throw error;
+    return withoutPhotoFn();
+  }
+}
+
 async function createUserWithOrg({ email, name, passwordHash = null, googleSub = null }) {
   return withTransaction(async (client) => {
-    let insert;
-    try {
-      insert = await client.query(
-        `INSERT INTO users (email, name, password_hash, google_sub, is_beta_approved, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, true, NOW(), NOW())
-         RETURNING id, email, name, photo_url`,
-        [email, name || null, passwordHash, googleSub]
-      );
-    } catch (error) {
-      if (!isMissingPhotoUrlColumnError(error)) {
-        throw error;
-      }
-      insert = await client.query(
-        `INSERT INTO users (email, name, password_hash, google_sub, is_beta_approved, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, true, NOW(), NOW())
-         RETURNING id, email, name`,
-        [email, name || null, passwordHash, googleSub]
-      );
-    }
+    const insert = await queryWithPhotoFallback(
+      () =>
+        client.query(
+          `INSERT INTO users (email, name, password_hash, google_sub, is_beta_approved, created_at, updated_at)
+           VALUES ($1, $2, $3, $4, true, NOW(), NOW())
+           RETURNING id, email, name, photo_url`,
+          [email, name || null, passwordHash, googleSub]
+        ),
+      () =>
+        client.query(
+          `INSERT INTO users (email, name, password_hash, google_sub, is_beta_approved, created_at, updated_at)
+           VALUES ($1, $2, $3, $4, true, NOW(), NOW())
+           RETURNING id, email, name`,
+          [email, name || null, passwordHash, googleSub]
+        )
+    );
 
     const user = insert.rows[0];
 
@@ -166,27 +178,20 @@ export async function signupWithEmail({ email, password, name }) {
 }
 
 export async function loginWithEmail({ email, password }) {
-  let result;
-  try {
-    result = await query(
-      `SELECT id, email, name, photo_url, password_hash, default_organization_id
-       FROM users
-       WHERE email = $1
-       LIMIT 1`,
-      [String(email || '').toLowerCase()]
-    );
-  } catch (error) {
-    if (!isMissingPhotoUrlColumnError(error)) {
-      throw error;
-    }
-    result = await query(
-      `SELECT id, email, name, password_hash, default_organization_id
-       FROM users
-       WHERE email = $1
-       LIMIT 1`,
-      [String(email || '').toLowerCase()]
-    );
-  }
+  const result = await queryWithPhotoFallback(
+    () =>
+      query(
+        `SELECT id, email, name, photo_url, password_hash, default_organization_id
+         FROM users WHERE email = $1 LIMIT 1`,
+        [String(email || '').toLowerCase()]
+      ),
+    () =>
+      query(
+        `SELECT id, email, name, password_hash, default_organization_id
+         FROM users WHERE email = $1 LIMIT 1`,
+        [String(email || '').toLowerCase()]
+      )
+  );
 
   const user = result.rows[0];
   if (!user?.password_hash) {
@@ -271,23 +276,20 @@ export async function loginWithGoogleCode({ code }) {
   }
 
   let userRow;
-  let existing;
-  try {
-    existing = await query(
-      `SELECT id, email, name, photo_url, default_organization_id
-       FROM users WHERE google_sub = $1 OR email = $2 LIMIT 1`,
-      [profile.sub, profile.email.toLowerCase()]
-    );
-  } catch (error) {
-    if (!isMissingPhotoUrlColumnError(error)) {
-      throw error;
-    }
-    existing = await query(
-      `SELECT id, email, name, default_organization_id
-       FROM users WHERE google_sub = $1 OR email = $2 LIMIT 1`,
-      [profile.sub, profile.email.toLowerCase()]
-    );
-  }
+  const existing = await queryWithPhotoFallback(
+    () =>
+      query(
+        `SELECT id, email, name, photo_url, default_organization_id
+         FROM users WHERE google_sub = $1 OR email = $2 LIMIT 1`,
+        [profile.sub, profile.email.toLowerCase()]
+      ),
+    () =>
+      query(
+        `SELECT id, email, name, default_organization_id
+         FROM users WHERE google_sub = $1 OR email = $2 LIMIT 1`,
+        [profile.sub, profile.email.toLowerCase()]
+      )
+  );
 
   if (existing.rows[0]) {
     const userId = existing.rows[0].id;
@@ -300,23 +302,20 @@ export async function loginWithGoogleCode({ code }) {
       [userId, profile.sub, profile.name || null]
     );
 
-    let refreshed;
-    try {
-      refreshed = await query(
-        `SELECT id, email, name, photo_url, default_organization_id
-         FROM users WHERE id = $1 LIMIT 1`,
-        [userId]
-      );
-    } catch (error) {
-      if (!isMissingPhotoUrlColumnError(error)) {
-        throw error;
-      }
-      refreshed = await query(
-        `SELECT id, email, name, default_organization_id
-         FROM users WHERE id = $1 LIMIT 1`,
-        [userId]
-      );
-    }
+    const refreshed = await queryWithPhotoFallback(
+      () =>
+        query(
+          `SELECT id, email, name, photo_url, default_organization_id
+           FROM users WHERE id = $1 LIMIT 1`,
+          [userId]
+        ),
+      () =>
+        query(
+          `SELECT id, email, name, default_organization_id
+           FROM users WHERE id = $1 LIMIT 1`,
+          [userId]
+        )
+    );
     userRow = refreshed.rows[0];
   } else {
     const created = await createUserWithOrg({
@@ -357,23 +356,20 @@ export async function loginWithGoogleCode({ code }) {
 }
 
 export async function getAuthenticatedUser(userId) {
-  let result;
-  try {
-    result = await query(
-      `SELECT id, email, name, photo_url, password_hash, default_organization_id, onboarding_step, onboarding_completed
-       FROM users WHERE id = $1 LIMIT 1`,
-      [userId]
-    );
-  } catch (error) {
-    if (!isMissingPhotoUrlColumnError(error)) {
-      throw error;
-    }
-    result = await query(
-      `SELECT id, email, name, password_hash, default_organization_id, onboarding_step, onboarding_completed
-       FROM users WHERE id = $1 LIMIT 1`,
-      [userId]
-    );
-  }
+  const result = await queryWithPhotoFallback(
+    () =>
+      query(
+        `SELECT id, email, name, photo_url, password_hash, default_organization_id, onboarding_step, onboarding_completed
+         FROM users WHERE id = $1 LIMIT 1`,
+        [userId]
+      ),
+    () =>
+      query(
+        `SELECT id, email, name, password_hash, default_organization_id, onboarding_step, onboarding_completed
+         FROM users WHERE id = $1 LIMIT 1`,
+        [userId]
+      )
+  );
 
   if (!result.rows[0]) {
     throw new HttpError(404, 'User not found');
@@ -403,30 +399,27 @@ export async function updateUserProfile(userId, { name, photoUrl }) {
   const normalizedName = normalizeProfileName(name);
   const normalizedPhotoUrl = normalizePhotoUrl(photoUrl);
 
-  let result;
-  try {
-    result = await query(
-      `UPDATE users
-       SET name = $2,
-           photo_url = $3,
-           updated_at = NOW()
-       WHERE id = $1
-       RETURNING id, email, name, photo_url`,
-      [userId, normalizedName, normalizedPhotoUrl]
-    );
-  } catch (error) {
-    if (!isMissingPhotoUrlColumnError(error)) {
-      throw error;
-    }
-    result = await query(
-      `UPDATE users
-       SET name = $2,
-           updated_at = NOW()
-       WHERE id = $1
-       RETURNING id, email, name`,
-      [userId, normalizedName]
-    );
-  }
+  const result = await queryWithPhotoFallback(
+    () =>
+      query(
+        `UPDATE users
+         SET name = $2,
+             photo_url = $3,
+             updated_at = NOW()
+         WHERE id = $1
+         RETURNING id, email, name, photo_url`,
+        [userId, normalizedName, normalizedPhotoUrl]
+      ),
+    () =>
+      query(
+        `UPDATE users
+         SET name = $2,
+             updated_at = NOW()
+         WHERE id = $1
+         RETURNING id, email, name`,
+        [userId, normalizedName]
+      )
+  );
 
   if (!result.rows[0]) {
     throw new HttpError(404, 'User not found');
@@ -506,26 +499,27 @@ export async function requestPasswordReset(email) {
     [user.id]
   );
 
-  // Generate a secure random token
-  const crypto = await import('crypto');
-  const token = crypto.randomBytes(32).toString('hex');
+  // Generate a secure random token — store only its SHA-256 hash in the DB
+  // so a DB read leak cannot be used to reset passwords directly.
+  const rawToken = randomBytes(32).toString('hex');
+  const tokenHash = createHash('sha256').update(rawToken).digest('hex');
 
   await query(
     `INSERT INTO password_reset_tokens (user_id, token, expires_at)
      VALUES ($1, $2, NOW() + INTERVAL '1 hour')`,
-    [user.id, token]
+    [user.id, tokenHash]
   );
 
   // Send the reset email if SendGrid is configured
-  const { env: envConfig } = await import('../config/env.js');
-  if (envConfig.sendgridApiKey && envConfig.sendgridFromEmail) {
+  if (env.sendgridApiKey && env.sendgridFromEmail) {
     const sendgrid = (await import('@sendgrid/mail')).default;
-    sendgrid.setApiKey(envConfig.sendgridApiKey);
+    sendgrid.setApiKey(env.sendgridApiKey);
 
-    const resetUrl = `${envConfig.frontendBaseUrl}/auth/reset-password?token=${token}`;
+    // Send the RAW token in the link — only the hash lives in the DB
+    const resetUrl = `${env.frontendBaseUrl}/auth/reset-password?token=${rawToken}`;
     await sendgrid.send({
       to: user.email,
-      from: envConfig.sendgridFromEmail,
+      from: env.sendgridFromEmail,
       subject: 'Reset your Quiet Tracker password',
       text: `You requested a password reset.\n\nClick the link below to set a new password. This link expires in 1 hour.\n\n${resetUrl}\n\nIf you did not request this, you can safely ignore this email.`,
       html: `
@@ -548,6 +542,10 @@ export async function requestPasswordReset(email) {
   return { sent: true };
 }
 
+function hashResetToken(rawToken) {
+  return createHash('sha256').update(rawToken).digest('hex');
+}
+
 /**
  * Complete the password reset flow.
  * Validates the token (must be unused and not expired) then sets the new password.
@@ -561,6 +559,9 @@ export async function resetPasswordWithToken({ token, newPassword }) {
     throw new HttpError(400, 'New password must be at least 8 characters');
   }
 
+  // Hash the incoming raw token before lookup — DB only stores the hash
+  const tokenHash = hashResetToken(String(token));
+
   const tokenRes = await query(
     `SELECT id, user_id
      FROM password_reset_tokens
@@ -568,7 +569,7 @@ export async function resetPasswordWithToken({ token, newPassword }) {
        AND used_at IS NULL
        AND expires_at > NOW()
      LIMIT 1`,
-    [token]
+    [tokenHash]
   );
 
   const row = tokenRes.rows[0];

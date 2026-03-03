@@ -32,6 +32,7 @@ backend/logs/
 # OS / Editor
 # ========================
 .DS_Store
+**/.DS_Store
 Thumbs.db
 .vscode/settings.json
 .idea/

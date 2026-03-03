@@ -97,6 +97,12 @@ router.post(
       throw new HttpError(400, 'url must use http or https protocol');
     }
 
+    // SSRF protection — block requests to internal/private hosts
+    const blockedHost = /^(localhost|127\.\d+\.\d+\.\d+|0\.0\.0\.0|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)$/i;
+    if (blockedHost.test(parsedUrl.hostname) || parsedUrl.hostname === '[::1]') {
+      throw new HttpError(400, 'URL points to a disallowed host');
+    }
+
     const threshold = thresholdPct === undefined ? 1 : Number(thresholdPct);
     if (Number.isNaN(threshold) || threshold < 1 || threshold > 50) {
       throw new HttpError(400, 'thresholdPct must be between 1 and 50');

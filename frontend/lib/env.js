@@ -1,4 +1,6 @@
-const rawBackendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || process.env.BACKEND_URL || 'http://localhost:4000').trim();
+// BACKEND_URL is intentionally server-only — do NOT use NEXT_PUBLIC_BACKEND_URL here
+// as it would be bundled into client JS and expose the Railway service URL.
+const rawBackendUrl = (process.env.BACKEND_URL || 'http://localhost:4000').trim();
 
 // Ensure the URL has a protocol
 const backendUrl = rawBackendUrl.startsWith('http')

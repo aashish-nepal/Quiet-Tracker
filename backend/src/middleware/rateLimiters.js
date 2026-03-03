@@ -37,3 +37,18 @@ export const manualCheckRateLimiter = rateLimit({
     error: 'Manual check limit reached. You can trigger up to 10 manual checks per hour.'
   }
 });
+
+/**
+ * Strict rate limit for password reset routes.
+ * Maximum 5 requests per 15 minutes per IP.
+ * Prevents email enumeration and SendGrid quota abuse.
+ */
+export const passwordResetRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: 'Too many password reset attempts. Please wait 15 minutes before trying again.'
+  }
+});

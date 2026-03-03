@@ -3,7 +3,17 @@ import { env } from '../config/env.js';
 
 const { Pool } = pg;
 
-export const pool = new Pool({ connectionString: env.databaseUrl });
+export const pool = new Pool({
+  connectionString: env.databaseUrl,
+  // Prevent Railway connection limit exhaustion
+  max: 10,
+  // Release idle clients after 30 seconds
+  idleTimeoutMillis: 30_000,
+  // Fail fast if we cannot get a connection within 5 seconds
+  connectionTimeoutMillis: 5_000,
+  // Kill runaway queries after 30 seconds
+  statement_timeout: 30_000,
+});
 
 export async function query(text, params = []) {
   return pool.query(text, params);
