@@ -1,8 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { env } from '../../../lib/env';
 
 function ResetPasswordForm() {
     const searchParams = useSearchParams();
@@ -30,7 +28,7 @@ function ResetPasswordForm() {
         setStatus('loading');
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/reset-password`, {
+            const res = await fetch(`${env.backendUrl}/api/auth/reset-password`, {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({ token, newPassword })

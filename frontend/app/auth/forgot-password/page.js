@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { env } from '../../../lib/env';
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -14,7 +13,7 @@ export default function ForgotPasswordPage() {
         setError('');
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/forgot-password`, {
+            const res = await fetch(`${env.backendUrl}/api/auth/forgot-password`, {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({ email })

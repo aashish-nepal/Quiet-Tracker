@@ -12,16 +12,23 @@ for (const key of required) {
   }
 }
 
+const normalizeUrl = (url, defaultVal) => {
+  const absolute = String(url || defaultVal || '').trim();
+  if (!absolute) return absolute;
+  if (absolute.startsWith('http')) return absolute;
+  return `https://${absolute}`;
+};
+
 const corsOrigins = String(process.env.CORS_ORIGINS || process.env.FRONTEND_BASE_URL || 'http://localhost:3000')
   .split(',')
-  .map((value) => value.trim())
+  .map((value) => normalizeUrl(value))
   .filter(Boolean);
 
 export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: Number(process.env.PORT || 4000),
-  appBaseUrl: process.env.APP_BASE_URL || 'http://localhost:4000',
-  frontendBaseUrl: process.env.FRONTEND_BASE_URL || 'http://localhost:3000',
+  appBaseUrl: normalizeUrl(process.env.APP_BASE_URL, 'http://localhost:4000'),
+  frontendBaseUrl: normalizeUrl(process.env.FRONTEND_BASE_URL, 'http://localhost:3000'),
   corsOrigins,
   databaseUrl: process.env.DATABASE_URL,
   cronSecret: process.env.CRON_SECRET,
@@ -47,7 +54,7 @@ export const env = {
   stripeCancelUrl: process.env.STRIPE_CANCEL_URL,
   googleClientId: process.env.GOOGLE_CLIENT_ID,
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  googleRedirectUri: process.env.GOOGLE_REDIRECT_URI,
+  googleRedirectUri: normalizeUrl(process.env.GOOGLE_REDIRECT_URI),
   amazonPartnerTag: process.env.AMAZON_PARTNER_TAG,
   amazonAccessKey: process.env.AMAZON_ACCESS_KEY,
   amazonSecretKey: process.env.AMAZON_SECRET_KEY,
