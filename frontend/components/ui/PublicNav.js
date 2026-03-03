@@ -55,7 +55,7 @@ export default function PublicNav({
     setLogoutLoading(true);
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
-      window.location.href = '/auth';
+      window.location.replace('/');
     } finally {
       setLogoutLoading(false);
     }
