@@ -3,7 +3,6 @@
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { env } from '../../../lib/env';
 
 function ResetPasswordForm() {
     const searchParams = useSearchParams();
@@ -31,7 +30,7 @@ function ResetPasswordForm() {
         setStatus('loading');
 
         try {
-            const res = await fetch(`${env.backendUrl}/api/auth/reset-password`, {
+            const res = await fetch(`/api/auth/reset-password`, {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({ token, newPassword })
