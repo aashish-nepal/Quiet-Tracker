@@ -1,0 +1,13 @@
+User-agent: *
+Disallow: /dashboard
+Disallow: /auth
+Disallow: /billing
+Disallow: /api/
+
+Allow: /
+Allow: /pricing
+Allow: /features
+Allow: /legal/terms
+Allow: /legal/privacy
+
+Sitemap: https://quiettracker.app/sitemap.xml
