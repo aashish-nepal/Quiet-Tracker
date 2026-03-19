@@ -65,7 +65,7 @@ export default function FAQ() {
   return (
     <section id="faq" className="section-shell" aria-labelledby="faq-title">
       {/* Header */}
-      <div className="mb-8 max-w-2xl">
+      <div className="mb-8 max-w-2xl text-center lg:text-left mx-auto lg:mx-0">
         <p className="eyebrow">FAQ</p>
         <h2 id="faq-title" className="mt-4 display-lg">
           Honest answers <span className="gradient-text">before you sign up.</span>
@@ -177,7 +177,7 @@ export default function FAQ() {
       </div>
 
       {/* Bottom CTA nudge */}
-      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] px-5 py-4">
+      <div className="mt-8 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] px-5 py-4 text-center lg:text-left">
         <p className="text-sm text-secondary">Still have questions? We're real people who respond fast.</p>
         <a href="mailto:hello@quiettracker.com"
           className="rounded-full border border-white/[0.12] bg-white/[0.05] px-4 py-2 text-xs font-semibold text-primary hover:bg-white/[0.09] transition">

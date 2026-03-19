@@ -550,32 +550,47 @@ body::before {
   /* ─── Responsive section heading scale ─────── */
   @media (max-width: 640px) {
     .display-xl {
-      font-size: clamp(2rem, 7.5vw, 2.8rem);
+      font-size: clamp(2.2rem, 8vw, 2.8rem);
+      letter-spacing: -0.02em;
     }
 
     .display-lg {
-      font-size: clamp(1.65rem, 6vw, 2.25rem);
+      font-size: clamp(1.8rem, 7vw, 2.4rem);
+      letter-spacing: -0.015em;
     }
 
     .display-md {
-      font-size: clamp(1.4rem, 5.5vw, 2rem);
+      font-size: clamp(1.5rem, 6vw, 2rem);
     }
 
     .heading-md {
-      font-size: clamp(1.2rem, 4.5vw, 1.6rem);
+      font-size: clamp(1.3rem, 5vw, 1.6rem);
     }
 
     .section-shell {
-      margin-top: 48px;
+      margin-top: 56px;
     }
 
     .section-shell:first-of-type {
-      margin-top: 24px;
+      margin-top: 32px;
     }
 
-    /* Tighter card padding on mobile */
+    /* Tighter card padding and premium feel on mobile */
     .card {
-      border-radius: 16px;
+      border-radius: 20px;
+    }
+
+    .mobile-glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .mobile-glow {
+      box-shadow: 0 0 40px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
   }
 

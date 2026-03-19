@@ -43,19 +43,19 @@ export default function Hero() {
     >
       {/* Background glows */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-24 left-1/2 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-brand-600/10 blur-[100px]" />
-        <div className="absolute -right-20 top-20 h-64 w-64 rounded-full bg-violet-600/8 blur-[80px]" />
+        <div className="absolute -top-24 left-1/2 h-[350px] w-[500px] sm:h-[500px] sm:w-[900px] -translate-x-1/2 rounded-full bg-brand-600/10 blur-[90px] sm:blur-[100px]" />
+        <div className="absolute -right-10 sm:-right-20 top-20 h-48 w-48 sm:h-64 sm:w-64 rounded-full bg-violet-600/8 blur-[60px] sm:blur-[80px]" />
       </div>
 
       <div className="premium-grid relative z-10">
         {/* Left copy */}
         <motion.div
-          className="col-span-12 lg:col-span-6"
+          className="col-span-12 lg:col-span-6 flex flex-col items-center text-center lg:items-start lg:text-left"
           variants={container}
           initial="hidden"
           animate="show"
         >
-          <motion.div variants={item}>
+          <motion.div variants={item} className="w-full">
             <span className="badge badge-blue">Revenue Protection Intelligence</span>
           </motion.div>
 
@@ -66,14 +66,14 @@ export default function Hero() {
           >
             Stop getting{' '}
             <span className="gradient-text">surprised</span>{' '}
-            by competitor price drops.
+            by competitor price drops
           </motion.h1>
 
-          <motion.p variants={item} className="mt-5 max-w-xl text-justify text-sm leading-relaxed sm:text-base md:text-lg lg:text-left" style={{ color: 'var(--text-secondary)' }}>
+          <motion.p variants={item} className="mt-5 max-w-xl text-center text-sm leading-relaxed sm:text-base md:text-lg lg:text-left" style={{ color: 'var(--text-secondary)' }}>
             Quiet Tracker monitors competitor listings across Shopify, Amazon, WooCommerce, and Etsy — alerting you the moment prices change with screenshot proof.
           </motion.p>
 
-          <motion.div variants={item} className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <motion.div variants={item} className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap w-full justify-center lg:justify-start">
             <Link href="/auth" className="btn-primary w-full text-center sm:w-auto">
               Start Free Monitoring →
             </Link>
@@ -82,7 +82,7 @@ export default function Hero() {
             </Link>
           </motion.div>
 
-          <motion.div variants={item} className="mt-8 flex flex-nowrap gap-2 overflow-x-auto pb-1 scrollbar-none md:flex-wrap md:overflow-visible md:pb-0">
+          <motion.div variants={item} className="mt-8 flex w-full justify-center lg:justify-start flex-nowrap gap-2 overflow-x-auto pb-1 scrollbar-none md:flex-wrap md:overflow-visible md:pb-0">
             {statPills.map((pill) => (
               <span
                 key={pill.label}
@@ -112,15 +112,16 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right — Product preview card (desktop only) */}
+        {/* Right — Product preview card */}
         <motion.div
           style={{ y }}
-          className="col-span-12 hidden lg:col-span-6 lg:block"
+          className="col-span-12 lg:col-span-6 mt-8 lg:mt-0"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="card-elevated relative overflow-hidden rounded-2xl p-0.5" style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.25), rgba(139,92,246,0.1), rgba(255,255,255,0.05))' }}>
+          {/* --- Desktop Preview --- */}
+          <div className="hidden lg:block card-elevated relative overflow-hidden rounded-2xl p-0.5" style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.25), rgba(139,92,246,0.1), rgba(255,255,255,0.05))' }}>
             <div className="card rounded-[22px] p-5">
               {/* Card header */}
               <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
@@ -180,6 +181,39 @@ export default function Hero() {
                     <div className="flex items-center gap-2 shrink-0 ml-2">
                       <span className={`text-xs font-bold ${event.up ? 'text-green-400' : 'text-red-400'}`}>{event.pct}</span>
                       <span className="text-[10px] text-tertiary">{event.time}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* --- Mobile Exclusive Streamlined Preview --- */}
+          <div className="lg:hidden mobile-glass p-[2px] bg-gradient-to-br from-brand-500/30 to-violet-500/10">
+            <div className="card rounded-[18px] p-4 bg-black/50 backdrop-blur-xl">
+              <div className="flex items-center justify-between border-b border-white/[0.06] pb-3 mb-3">
+                <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-brand-400">Live Activity Feed</span>
+                <div className="flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[10px] font-bold text-red-400">
+                  <span className="h-1.5 w-1.5 animate-pulseSoft rounded-full bg-red-400" />
+                  Active
+                </div>
+              </div>
+              <div className="space-y-2">
+                {liveEvents.slice(0, 3).map((event, i) => (
+                  <motion.div
+                    key={`mobile-${event.name}`}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 + i * 0.15, duration: 0.4 }}
+                    className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 shadow-sm"
+                  >
+                    <div className="flex min-w-0 pr-2 items-center gap-2">
+                      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${event.up ? 'bg-green-400' : 'bg-red-400'}`} />
+                      <span className="truncate text-xs font-medium text-primary">{event.name}</span>
+                    </div>
+                    <div className="flex flex-col items-end shrink-0">
+                      <span className={`text-xs font-bold ${event.up ? 'text-green-400' : 'text-red-400'}`}>{event.pct}</span>
+                      <span className="text-[9px] text-tertiary">{event.time}</span>
                     </div>
                   </motion.div>
                 ))}

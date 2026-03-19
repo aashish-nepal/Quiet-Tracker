@@ -177,11 +177,11 @@ export default function Features() {
 
   return (
     <section className="section-shell" aria-labelledby="feature-title">
-      <div className="mb-10 max-w-2xl">
+      <div className="mb-10 max-w-2xl text-center lg:text-left mx-auto lg:mx-0">
         <p className="eyebrow">What You Get</p>
         <h2 id="feature-title" className="mt-4 display-md">
-          Everything you need to stay{' '}
-          <span className="gradient-text">ahead of the market.</span>
+          Your market {' '}
+          <span className="gradient-text">advantage</span>
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-secondary sm:text-base">
           A complete toolkit for commerce teams serious about protecting their pricing margins — built for speed and clarity.
@@ -199,7 +199,7 @@ export default function Features() {
               key={feat.id}
               onHoverStart={() => setHovered(feat.id)}
               onHoverEnd={() => setHovered(null)}
-              className={`card group relative overflow-hidden rounded-2xl p-4 transition-all duration-300 hover:border-white/[0.15] md:p-6 ${feat.span}`}
+              className={`card group relative overflow-hidden rounded-2xl p-4 transition-all duration-300 hover:border-white/[0.15] md:p-6 ${feat.span} max-sm:mobile-glass`}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}

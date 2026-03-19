@@ -258,11 +258,11 @@ export default function Solution() {
   return (
     <section id="how-it-works" className="section-shell" aria-labelledby="solution-title">
       {/* Header */}
-      <div className="mb-10 max-w-2xl">
+      <div className="mb-10 max-w-2xl text-center lg:text-left mx-auto lg:mx-0">
         <p className="eyebrow">How It Works</p>
         <h2 id="solution-title" className="mt-4 display-lg">
-          From URL to alert in{' '}
-          <span className="gradient-text">3 simple steps.</span>
+          Set alerts in {' '}
+          <span className="gradient-text">3 steps</span>
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-secondary sm:text-base">
           No spreadsheets, no manual checking — automated intelligence that responds before you even wake up.

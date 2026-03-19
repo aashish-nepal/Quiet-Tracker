@@ -86,19 +86,19 @@ export default function AlertsPanel() {
 
       {/* Filter tabs + alert list */}
       <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4 space-y-3">
-        <div className="flex items-center gap-2 flex-wrap">
-          <Filter size={13} className="text-tertiary" />
+        <div className="flex items-center gap-1 sm:gap-2 flex-nowrap">
+          <Filter size={13} className="text-tertiary hidden sm:block shrink-0" />
           {['all', 'high', 'medium', 'low'].map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`rounded-full px-3 py-1 text-[11px] font-semibold transition capitalize ${filter === f ? 'bg-brand-600 text-white' : 'border border-white/[0.08] bg-white/[0.03] text-secondary hover:text-primary'
+              className={`flex-1 sm:flex-none rounded-full px-1 py-1.5 sm:px-3 sm:py-1 text-[10px] sm:text-[11px] font-semibold transition capitalize whitespace-nowrap ${filter === f ? 'bg-brand-600 text-white' : 'border border-white/[0.08] bg-white/[0.03] text-secondary hover:text-primary'
                 }`}
             >
               {f === 'all' ? `All (${allAlerts.length})` : f}
             </button>
           ))}
-          <span className="ml-auto text-[11px] text-tertiary">{filtered.length} shown</span>
+          <span className="ml-auto text-[11px] text-tertiary hidden sm:block shrink-0">{filtered.length} shown</span>
         </div>
 
         <div className="space-y-2">

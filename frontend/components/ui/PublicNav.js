@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import SettingsModal from './SettingsModal';
 
 function scrollTo(id) {
@@ -136,7 +137,7 @@ export default function PublicNav({
                   <Link href="/auth" className="btn-primary hidden text-[13px] sm:inline-flex">
                     Get Started →
                   </Link>
-                  <Link href="/auth" className="btn-primary text-[12px] sm:hidden" style={{ padding: '6px 14px' }}>
+                  <Link href="/auth" className="btn-primary text-[13px] sm:hidden shadow-[0_0_16px_rgba(37,99,235,0.4)]" style={{ padding: '8px 16px' }}>
                     Sign up
                   </Link>
                 </>
@@ -166,29 +167,41 @@ export default function PublicNav({
         </div>
 
         {/* Mobile dropdown (public links, responsive) */}
-        {!hideLinks && mobileOpen && (
-          <div className="border-t border-white/[0.07] px-4 pb-4 pt-2 lg:hidden">
-            {isAuthenticated && (
-              <Link href="/dashboard" onClick={() => setMobileOpen(false)}
-                className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-secondary transition hover:bg-white/[0.06] hover:text-primary">
-                Dashboard
-              </Link>
+        {!hideLinks && (
+          <AnimatePresence>
+            {mobileOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0, y: -10 }}
+                animate={{ height: 'auto', opacity: 1, y: 0 }}
+                exit={{ height: 0, opacity: 0, y: -10 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="overflow-hidden border-t border-white/[0.07] bg-black/40 backdrop-blur-xl lg:hidden"
+              >
+                <div className="px-4 pb-5 pt-3 flex flex-col gap-1">
+                  {isAuthenticated && (
+                    <Link href="/dashboard" onClick={() => setMobileOpen(false)}
+                      className="block w-full rounded-xl px-4 py-3 text-left text-[15px] font-medium text-secondary transition hover:bg-white/[0.06] hover:text-primary">
+                      Dashboard
+                    </Link>
+                  )}
+                  <button onClick={() => { scrollTo('pricing'); setMobileOpen(false); }}
+                    className="w-full rounded-xl px-4 py-3 text-left text-[15px] font-medium text-secondary transition hover:bg-white/[0.06] hover:text-primary">
+                    Pricing
+                  </button>
+                  <button onClick={() => { scrollTo('faq'); setMobileOpen(false); }}
+                    className="w-full rounded-xl px-4 py-3 text-left text-[15px] font-medium text-secondary transition hover:bg-white/[0.06] hover:text-primary">
+                    FAQ
+                  </button>
+                  {!isAuthenticated && (
+                    <Link href="/auth" onClick={() => setMobileOpen(false)}
+                      className="mt-3 block w-full rounded-xl bg-brand-600 px-4 py-3.5 text-center text-[15px] font-bold text-white shadow-[0_0_24px_rgba(37,99,235,0.4)] transition hover:bg-brand-500">
+                      Get Started →
+                    </Link>
+                  )}
+                </div>
+              </motion.div>
             )}
-            <button onClick={() => { scrollTo('pricing'); setMobileOpen(false); }}
-              className="w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-secondary transition hover:bg-white/[0.06] hover:text-primary">
-              Pricing
-            </button>
-            <button onClick={() => { scrollTo('faq'); setMobileOpen(false); }}
-              className="w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-secondary transition hover:bg-white/[0.06] hover:text-primary">
-              FAQ
-            </button>
-            {!isAuthenticated && (
-              <Link href="/auth" onClick={() => setMobileOpen(false)}
-                className="mt-2 block rounded-xl bg-brand-600 px-3 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-brand-500">
-                Get Started →
-              </Link>
-            )}
-          </div>
+          </AnimatePresence>
         )}
       </header>
 

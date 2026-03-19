@@ -45,18 +45,18 @@ export default function Pricing() {
   return (
     <section id="pricing" className="section-shell" aria-labelledby="pricing-title">
       {/* Header */}
-      <div className="mb-10 flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-        <div>
+      <div className="mb-10 flex flex-col items-center justify-center gap-5 text-center lg:flex-row lg:items-end lg:justify-between lg:text-left">
+        <div className="mx-auto lg:mx-0">
           <p className="eyebrow">Pricing</p>
           <h2 id="pricing-title" className="mt-4 display-lg">
-            Simple, transparent{' '}
-            <span className="gradient-text">pricing.</span>
+            Simple, Transparent{' '}
+            <span className="gradient-text">Pricing</span>
           </h2>
           <p className="mt-3 text-base text-secondary">No hidden fees. No credit card for free plan. Cancel anytime.</p>
         </div>
 
         {/* Billing toggle */}
-        <div className="relative inline-flex items-center self-start rounded-full border border-white/10 bg-white/[0.04] p-1 sm:self-auto">
+        <div className="relative inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] p-1">
           <motion.div layout className="absolute inset-y-1 rounded-full bg-brand-600"
             style={{ left: yearly ? '50%' : '4px', right: yearly ? '4px' : '50%' }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }} />
@@ -76,21 +76,21 @@ export default function Pricing() {
       <div className="grid gap-5 sm:grid-cols-2">
         {activePlans.map((plan) => (
           <article key={plan.name}
-            className={`relative overflow-hidden rounded-2xl p-0.5 ${plan.style === 'featured'
-              ? 'bg-gradient-to-br from-brand-500/40 via-violet-500/20 to-brand-600/30'
-              : 'border border-white/[0.08] bg-transparent'
+            className={`relative overflow-hidden rounded-2xl md:rounded-[24px] p-0.5 transition-all duration-300 ${plan.style === 'featured'
+              ? 'bg-gradient-to-br from-brand-500/50 via-violet-500/30 to-brand-600/40 max-sm:mobile-glow'
+              : 'border border-white/[0.08] bg-transparent max-sm:mobile-glass'
               }`}
           >
-            <div className="h-full rounded-[22px] bg-card p-4 md:p-8">
+            <div className="h-full rounded-[22px] bg-card p-4 md:p-8 text-center sm:text-left flex flex-col">
               {plan.badge && (
-                <span className="absolute right-5 top-5 rounded-full bg-brand-600 px-3 py-1 text-[11px] font-bold text-white">
+                <span className="absolute right-5 top-5 max-sm:relative max-sm:top-auto max-sm:right-auto max-sm:mx-auto max-sm:mb-4 max-sm:block w-max sm:absolute rounded-full bg-brand-600 px-3 py-1 text-[11px] font-bold text-white">
                   {plan.badge}
                 </span>
               )}
 
               <p className="text-xs font-bold uppercase tracking-[0.12em] text-secondary">{plan.name}</p>
 
-              <div className="mt-4 flex items-end gap-2">
+              <div className="mt-4 flex items-end justify-center sm:justify-start gap-2">
                 <AnimatePresence mode="wait">
                   <motion.span key={plan.price}
                     initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
@@ -100,16 +100,16 @@ export default function Pricing() {
                   </motion.span>
                 </AnimatePresence>
                 {plan.price > 0 && (
-                  <div className="mb-2">
+                  <div className="mb-2 text-left">
                     <p className="text-sm text-secondary">/{yearly ? 'yr' : 'mo'}</p>
-                    {yearly && <p className="text-[10px] text-green-400 font-semibold">Save ${plan.monthly * 12 - plan.yearly}/yr</p>}
+                    {yearly && <p className="text-[10px] text-green-400 font-semibold whitespace-nowrap">Save ${plan.monthly * 12 - plan.yearly}/yr</p>}
                   </div>
                 )}
               </div>
               <p className="mt-1 text-sm text-secondary">{plan.tagline}</p>
 
               {/* Features */}
-              <ul className="mt-6 space-y-2.5">
+              <ul className="mt-6 space-y-2.5 mx-auto max-sm:w-max text-left sm:mx-0 sm:w-auto">
                 {plan.features.map(f => (
                   <li key={f} className="flex items-center gap-3 text-sm">
                     <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-brand-600/20 text-brand-400">
@@ -143,8 +143,8 @@ export default function Pricing() {
       </div>
 
       {/* Guarantee */}
-      <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-green-500/20 bg-green-500/5 px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center">
-        <span className="rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-bold text-green-400">✓ 7-day free trial</span>
+      <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-green-500/20 bg-green-500/5 px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center text-center sm:text-left">
+        <span className="mx-auto sm:mx-0 w-max rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-bold text-green-400">✓ 7-day free trial</span>
         <p className="text-sm text-secondary">New Starter subscribers get a 7-day free trial. Cancel anytime — no questions asked.</p>
       </div>
 
@@ -171,7 +171,7 @@ export default function Pricing() {
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
               className="overflow-hidden"
             >
-              <div className="mt-2 card rounded-2xl overflow-auto">
+              <div className="mt-2 card rounded-2xl overflow-x-auto scrollbar-none max-sm:border-r-transparent relative">
                 <table className="min-w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/[0.06]">

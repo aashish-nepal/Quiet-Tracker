@@ -60,13 +60,15 @@ export default function Demo() {
 
   return (
     <section id="experience" className="section-shell panel px-5 py-7 md:px-10 md:py-10" aria-labelledby="demo-title">
-      <p className="eyebrow">Product Experience</p>
-      <h2 id="demo-title" className="mt-4 display-md">
-        Daily dashboard <span className="gradient-text">view.</span>
-      </h2>
+      <div className="text-center lg:text-left">
+        <p className="eyebrow">Product Experience</p>
+        <h2 id="demo-title" className="mt-4 display-md">
+          Daily dashboard <span className="gradient-text">view</span>
+        </h2>
+      </div>
 
-      <div className="mt-5 rounded-ds16 border border-line bg-layer/70 p-1.5">
-        <div role="tablist" aria-label="Product experience tabs" className="flex flex-wrap gap-1.5">
+      <div className="mt-5 rounded-ds16 border border-line bg-layer/70 p-1 sm:p-1.5">
+        <div role="tablist" aria-label="Product experience tabs" className="flex flex-nowrap md:flex-wrap gap-1 sm:gap-1.5">
           {tabs.map((tab, index) => {
             const isActive = activeTab === tab.key;
             const tabId = `tab-${tab.key}`;
@@ -86,7 +88,7 @@ export default function Demo() {
                 tabIndex={isActive ? 0 : -1}
                 onKeyDown={(event) => handleKeyDown(index, event)}
                 onClick={() => setActiveTab(tab.key)}
-                className={`relative rounded-ds10 px-3 py-2 text-sm font-semibold transition ${isActive ? 'text-ink' : 'text-muted hover:text-ink'
+                className={`relative flex-1 md:flex-none text-center rounded-ds10 px-1 py-1.5 sm:px-3 sm:py-2 text-[10px] sm:text-sm font-semibold transition ${isActive ? 'text-ink' : 'text-muted hover:text-ink'
                   }`}
               >
                 {isActive ? (
