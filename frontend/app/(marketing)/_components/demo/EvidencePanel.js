@@ -33,7 +33,7 @@ export default function EvidencePanel() {
   return (
     <div className="space-y-4">
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
         {[
           { label: 'Total Captures', value: totalCaptures, icon: Camera },
           { label: 'This Week', value: 48, icon: Clock },
@@ -41,12 +41,12 @@ export default function EvidencePanel() {
         ].map(s => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
-              <div className="flex items-center gap-2">
-                {Icon && <Icon size={13} className="text-emerald-400" />}
-                <p className="text-xl font-black text-primary">{s.value}</p>
+            <div key={s.label} className="min-w-0 rounded-xl sm:rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3 sm:p-4 break-words">
+              <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                {Icon && <Icon size={13} className="shrink-0 text-emerald-400" />}
+                <p className="text-lg sm:text-xl font-black text-primary tracking-tight shrink-0">{s.value}</p>
               </div>
-              <p className="text-[10px] text-tertiary mt-0.5">{s.label}</p>
+              <p className="text-[9px] sm:text-[10px] text-tertiary mt-0.5 leading-tight">{s.label}</p>
             </div>
           );
         })}

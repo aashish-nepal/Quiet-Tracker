@@ -84,7 +84,7 @@ export default function PublicNav({
 
             {/* Public links — shown when not hideLinks, on sm+ */}
             {!hideLinks && (
-              <nav className="hidden items-center sm:flex">
+              <nav className="hidden items-center lg:flex">
                 {isAuthenticated && (
                   <Link
                     href="/dashboard"
@@ -103,68 +103,77 @@ export default function PublicNav({
             )}
 
             {/* CTA or Avatar */}
-            {isAuthenticated ? (
-              /* ── Profile avatar button ── */
-              <button
-                ref={avatarBtnRef}
-                type="button"
-                onClick={toggleProfile}
-                className="ml-1 flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] pl-1.5 pr-3 py-1.5 transition hover:border-white/20 hover:bg-white/[0.07]"
-              >
-                {(currentUser?.photoUrl || user?.photoUrl) ? (
-                  <img src={currentUser?.photoUrl || user.photoUrl} alt="" className="h-7 w-7 rounded-full object-cover" referrerPolicy="no-referrer" />
-                ) : (
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-600 text-[11px] font-bold text-white">
-                    {initials(currentUser || user)}
-                  </div>
-                )}
-                <span className="hidden max-w-[120px] truncate text-sm font-semibold text-primary sm:block">
-                  {(currentUser?.name || user?.name)?.split(' ')[0] || 'Account'}
-                </span>
-                <svg
-                  width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
-                  className="shrink-0 text-tertiary"
-                  style={{ transform: profileOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}
+            <div className="flex items-center gap-1 sm:gap-2">
+              {isAuthenticated ? (
+                /* ── Profile avatar button ── */
+                <button
+                  ref={avatarBtnRef}
+                  type="button"
+                  onClick={toggleProfile}
+                  className="flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] pl-1.5 pr-3 py-1.5 transition hover:border-white/20 hover:bg-white/[0.07]"
                 >
-                  <path d="M7 10l5 5 5-5z" />
-                </svg>
-              </button>
-            ) : (
-              /* ── Get Started ── */
-              <>
-                <Link href="/auth" className="btn-primary hidden text-[13px] sm:inline-flex">
-                  Get Started →
-                </Link>
-                <Link href="/auth" className="btn-primary text-[12px] sm:hidden">
-                  Sign up
-                </Link>
-                {/* Mobile hamburger (only when public links exist) */}
-                {!hideLinks && (
-                  <button
-                    type="button"
-                    onClick={() => setMobileOpen(v => !v)}
-                    className="ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-secondary transition hover:text-primary sm:hidden"
-                    aria-label="Menu"
+                  {(currentUser?.photoUrl || user?.photoUrl) ? (
+                    <img src={currentUser?.photoUrl || user.photoUrl} alt="" className="h-7 w-7 rounded-full object-cover" referrerPolicy="no-referrer" />
+                  ) : (
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-600 text-[11px] font-bold text-white">
+                      {initials(currentUser || user)}
+                    </div>
+                  )}
+                  <span className="hidden max-w-[120px] truncate text-sm font-semibold text-primary lg:block">
+                    {(currentUser?.name || user?.name)?.split(' ')[0] || 'Account'}
+                  </span>
+                  <svg
+                    width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                    className="shrink-0 text-tertiary"
+                    style={{ transform: profileOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}
                   >
-                    {mobileOpen ? (
-                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <line x1="3" y1="3" x2="11" y2="11" /><line x1="11" y1="3" x2="3" y2="11" />
-                      </svg>
-                    ) : (
-                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <line x1="1" y1="3" x2="13" y2="3" /><line x1="1" y1="7" x2="13" y2="7" /><line x1="1" y1="11" x2="13" y2="11" />
-                      </svg>
-                    )}
-                  </button>
-                )}
-              </>
-            )}
+                    <path d="M7 10l5 5 5-5z" />
+                  </svg>
+                </button>
+              ) : (
+                /* ── Get Started ── */
+                <>
+                  <Link href="/auth" className="btn-primary hidden text-[13px] sm:inline-flex">
+                    Get Started →
+                  </Link>
+                  <Link href="/auth" className="btn-primary text-[12px] sm:hidden" style={{ padding: '6px 14px' }}>
+                    Sign up
+                  </Link>
+                </>
+              )}
+
+              {/* Mobile hamburger (only when public links exist) */}
+              {!hideLinks && (
+                <button
+                  type="button"
+                  onClick={() => setMobileOpen(v => !v)}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-secondary transition hover:text-primary lg:hidden"
+                  aria-label="Menu"
+                >
+                  {mobileOpen ? (
+                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <line x1="3" y1="3" x2="11" y2="11" /><line x1="11" y1="3" x2="3" y2="11" />
+                    </svg>
+                  ) : (
+                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <line x1="1" y1="3" x2="13" y2="3" /><line x1="1" y1="7" x2="13" y2="7" /><line x1="1" y1="11" x2="13" y2="11" />
+                    </svg>
+                  )}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Mobile dropdown (public, not authenticated) */}
-        {!isAuthenticated && !hideLinks && mobileOpen && (
-          <div className="border-t border-white/[0.07] px-4 pb-4 pt-2 sm:hidden">
+        {/* Mobile dropdown (public links, responsive) */}
+        {!hideLinks && mobileOpen && (
+          <div className="border-t border-white/[0.07] px-4 pb-4 pt-2 lg:hidden">
+            {isAuthenticated && (
+              <Link href="/dashboard" onClick={() => setMobileOpen(false)}
+                className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-secondary transition hover:bg-white/[0.06] hover:text-primary">
+                Dashboard
+              </Link>
+            )}
             <button onClick={() => { scrollTo('pricing'); setMobileOpen(false); }}
               className="w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-secondary transition hover:bg-white/[0.06] hover:text-primary">
               Pricing
@@ -173,10 +182,12 @@ export default function PublicNav({
               className="w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-secondary transition hover:bg-white/[0.06] hover:text-primary">
               FAQ
             </button>
-            <Link href="/auth" onClick={() => setMobileOpen(false)}
-              className="mt-2 block rounded-xl bg-brand-600 px-3 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-brand-500">
-              Get Started →
-            </Link>
+            {!isAuthenticated && (
+              <Link href="/auth" onClick={() => setMobileOpen(false)}
+                className="mt-2 block rounded-xl bg-brand-600 px-3 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-brand-500">
+                Get Started →
+              </Link>
+            )}
           </div>
         )}
       </header>

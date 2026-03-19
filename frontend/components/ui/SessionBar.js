@@ -172,7 +172,7 @@ export default function SessionBar({ isAuthenticated, user = null, hideBrand = f
                   {initialsFromUser(user)}
                 </div>
               )}
-              <span className="hidden max-w-[140px] truncate text-sm font-semibold text-primary sm:block">{displayName}</span>
+              <span className="hidden max-w-[140px] truncate text-sm font-semibold text-primary lg:block">{displayName}</span>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-tertiary" style={{ transform: menuOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.15s' }}>
                 <path d="M7 10l5 5 5-5z" />
               </svg>

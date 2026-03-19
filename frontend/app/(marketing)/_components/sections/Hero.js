@@ -69,7 +69,7 @@ export default function Hero() {
             by competitor price drops.
           </motion.h1>
 
-          <motion.p variants={item} className="mt-5 max-w-xl text-sm leading-relaxed sm:text-base md:text-lg" style={{ color: 'var(--text-secondary)' }}>
+          <motion.p variants={item} className="mt-5 max-w-xl text-justify text-sm leading-relaxed sm:text-base md:text-lg lg:text-left" style={{ color: 'var(--text-secondary)' }}>
             Quiet Tracker monitors competitor listings across Shopify, Amazon, WooCommerce, and Etsy — alerting you the moment prices change with screenshot proof.
           </motion.p>
 

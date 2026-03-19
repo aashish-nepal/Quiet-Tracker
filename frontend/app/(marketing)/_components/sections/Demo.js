@@ -62,7 +62,7 @@ export default function Demo() {
     <section id="experience" className="section-shell panel px-5 py-7 md:px-10 md:py-10" aria-labelledby="demo-title">
       <p className="eyebrow">Product Experience</p>
       <h2 id="demo-title" className="mt-4 display-md">
-        See what your dashboard <span className="gradient-text">looks like day to day.</span>
+        Daily dashboard <span className="gradient-text">view.</span>
       </h2>
 
       <div className="mt-5 rounded-ds16 border border-line bg-layer/70 p-1.5">

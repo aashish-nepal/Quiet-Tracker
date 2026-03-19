@@ -36,18 +36,18 @@ export default function AnalyticsPanel() {
   return (
     <div className="space-y-4">
       {/* Summary KPIs */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
         {[
           { label: 'Your Avg Margin', value: '32.5%', delta: '+0.4%', up: true },
           { label: 'Comp. Median', value: '31.0%', delta: '-0.2%', up: false },
           { label: 'Margin Lead', value: '+1.5pp', delta: 'Protected', up: true },
         ].map(k => (
-          <div key={k.label} className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
-            <p className="text-xl font-black text-primary">{k.value}</p>
-            <p className="text-[10px] text-tertiary mt-0.5">{k.label}</p>
-            <div className={`mt-1.5 flex items-center gap-1 text-[11px] font-semibold ${k.up ? 'text-green-400' : 'text-red-400'}`}>
-              {k.up ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-              {k.delta}
+          <div key={k.label} className="min-w-0 rounded-xl sm:rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3 sm:p-4 break-words">
+            <p className="text-lg sm:text-xl font-black text-primary tracking-tight shrink-0">{k.value}</p>
+            <p className="text-[9px] sm:text-[10px] text-tertiary mt-0.5 leading-tight">{k.label}</p>
+            <div className={`mt-1 sm:mt-1.5 flex flex-wrap items-center gap-1 text-[10px] sm:text-[11px] font-semibold ${k.up ? 'text-green-400' : 'text-red-400'}`}>
+              {k.up ? <TrendingUp size={11} className="shrink-0" /> : <TrendingDown size={11} className="shrink-0" />}
+              <span className="truncate">{k.delta}</span>
             </div>
           </div>
         ))}

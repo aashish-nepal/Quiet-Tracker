@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Link2, RefreshCw, BellRing, ChevronRight, ExternalLink, Check } from 'lucide-react';
 
 
@@ -46,9 +46,11 @@ const steps = [
 function URLInputPreview({ active }) {
   const [typed, setTyped] = useState('');
   const fullUrl = 'https://www.amazon.com/dp/B08P9CVTFR/';
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
-    if (!active) { setTyped(''); return; }
+    if (!active || !isInView) { setTyped(''); return; }
     let i = 0;
     const t = setInterval(() => {
       i++;
@@ -56,10 +58,10 @@ function URLInputPreview({ active }) {
       if (i >= fullUrl.length) clearInterval(t);
     }, 38);
     return () => clearInterval(t);
-  }, [active]);
+  }, [active, isInView]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" ref={ref}>
       {/* URL input */}
       <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
         <p className="text-[11px] font-bold uppercase tracking-widest text-blue-400 mb-3">Add Competitor Product</p>
@@ -231,7 +233,7 @@ function AlertFeedPreview() {
         </motion.div>
       ))}
       {/* Channels row */}
-      <div className="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-2.5">
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-2.5">
         <span className="text-[11px] text-tertiary">Delivered via</span>
         {['✉ Email', '💬 Slack', '🎮 Discord'].map((ch) => (
           <span key={ch} className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-semibold text-secondary">{ch}</span>
@@ -272,15 +274,19 @@ export default function Solution() {
         <div className="grid lg:grid-cols-[1fr_1.1fr]">
 
           {/* ── Left: steps ─────────────────────────── */}
-          <div className="flex flex-col gap-1 border-b border-white/[0.06] p-5 md:p-7 lg:border-b-0 lg:border-r">
+          <div className="flex flex-col gap-1 border-b border-white/[0.06] p-4 md:p-7 lg:border-b-0 lg:border-r min-w-0">
             {steps.map((step, i) => {
               const Icon = step.icon;
               const isActive = active === i;
+              const StepPreview = previewMap[step.preview];
               return (
-                <button
+                <div
                   key={step.number}
                   onClick={() => setActive(i)}
-                  className={`group relative w-full rounded-2xl p-5 text-left transition-all duration-300 ${isActive
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActive(i); }}
+                  role="button"
+                  tabIndex={0}
+                  className={`cursor-pointer group relative block w-full rounded-2xl p-4 md:p-5 text-left transition-all duration-300 outline-none ${isActive
                     ? 'border border-white/[0.1] bg-white/[0.04]'
                     : 'border border-transparent hover:border-white/[0.07] hover:bg-white/[0.02]'
                     }`}
@@ -295,7 +301,7 @@ export default function Solution() {
                     />
                   )}
 
-                  <div className="flex items-start gap-4">
+                  <div className="flex w-full items-start gap-3 md:gap-4">
                     {/* Icon */}
                     <div
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${isActive
@@ -329,7 +335,7 @@ export default function Solution() {
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
                             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                            className="mt-2 text-sm leading-relaxed text-secondary"
+                            className="mt-2 text-sm leading-relaxed text-secondary hidden lg:block"
                           >
                             {step.desc}
                           </motion.p>
@@ -343,7 +349,28 @@ export default function Solution() {
                         }`}
                     />
                   </div>
-                </button>
+
+                  {/* Mobile Preview underneath the flex row */}
+                  <AnimatePresence initial={false}>
+                    {isActive && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden lg:hidden"
+                      >
+                        <div
+                          className="pt-4 cursor-default"
+                          onClick={(e) => e.stopPropagation()}
+                          onKeyDown={(e) => e.stopPropagation()}
+                        >
+                          <StepPreview active={isActive} />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               );
             })}
 
@@ -366,7 +393,7 @@ export default function Solution() {
           </div>
 
           {/* ── Right: live preview ──────────────────── */}
-          <div className="p-5 md:p-7">
+          <div className="hidden lg:block p-4 md:p-7 min-w-0">
             <div className="mb-5 flex items-center gap-2">
               <div
                 className="flex h-6 w-6 items-center justify-center rounded-lg text-white"

@@ -42,16 +42,16 @@ export default function AlertsPanel() {
   return (
     <div className="space-y-4">
       {/* Stats row */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
         {[
           { label: 'Active Alerts', value: allAlerts.length, color: 'text-primary', sub: 'last 24h' },
           { label: 'High Severity', value: highCount, color: 'text-red-400', sub: 'require action' },
           { label: 'Avg Drop', value: `-${totalDrop}%`, color: 'text-amber-400', sub: 'across undercuts' },
         ].map(s => (
-          <div key={s.label} className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
-            <p className={`text-2xl font-black ${s.color}`}>{s.value}</p>
-            <p className="text-[11px] font-semibold text-secondary mt-0.5">{s.label}</p>
-            <p className="text-[10px] text-tertiary">{s.sub}</p>
+          <div key={s.label} className="min-w-0 rounded-xl sm:rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3 sm:p-4 break-words">
+            <p className={`text-xl sm:text-2xl font-black tracking-tight shrink-0 ${s.color}`}>{s.value}</p>
+            <p className="text-[10px] sm:text-[11px] font-semibold text-secondary mt-0.5 leading-tight">{s.label}</p>
+            <p className="text-[9px] sm:text-[10px] text-tertiary leading-tight mt-0.5">{s.sub}</p>
           </div>
         ))}
       </div>
